@@ -6,9 +6,7 @@ entity ex_2 is
 	port(
 		clk_in: in std_logic;
 		sreset_in: in std_logic;
-		
 		a_in: in std_logic_vector(7 downto 0);
-		
 		vhdl_assert_out: out std_logic
 	);
 end;
@@ -20,7 +18,7 @@ architecture tester of ex_2 is
 begin
 	default clock is rising_edge(clk_in);
 	
-	psl_assert: assert {a_in(0) = '1'; a_in(0) = '0'};
+	psl_assert: assert always {a_in(0) = '1'} |=> {a_in(0) = '0'};
 	
 	process(clk_in)
 	begin
@@ -28,7 +26,7 @@ begin
 			a_d1 <= a_in;
 			
 			start_d1 <= start;
-			start <= '0';
+			-- start <= '0';
 		end if;
 	end process;
 	
@@ -36,15 +34,11 @@ begin
 	begin
 		vhdl_assert_out <= '1';
 		
-		if start = '1' then
-			if not (a_in(0) = '1') then
-				vhdl_assert_out <= '0';
-			end if;
-		end if;
-		
 		if start_d1 = '1' then
-			if not (a_d1(0) = '1' and a_in(0) = '0') then
-				vhdl_assert_out <= '0';
+			if a_d1(0) = '1' then
+				if a_in(0) /= '0' then
+					vhdl_assert_out <= '0';
+				end if;
 			end if;
 		end if;
 	end process;
