@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity ex_1 is
+entity ex_2 is
 	port(
 		clk_in: in std_logic;
 		sreset_in: in std_logic;
@@ -13,7 +13,7 @@ entity ex_1 is
 	);
 end;
 
-architecture tester of ex_1 is
+architecture tester of ex_2 is
 	signal start: std_logic := '1';
 	signal start_d1: std_logic := '0';
 	signal a_d1: std_logic_vector(7 downto 0);

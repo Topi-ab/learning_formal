@@ -14,10 +14,11 @@ prove: depth 10
 smtbmc boolector
 
 [script]
-read_verilog ex_1.v
+read_verilog ex_1.v ex_2.v
 ghdl --std=08 compare_1.vhdl -e compare_1
 prep -top compare_1
 
 [files]
 ex_1.v
+ex_2.v
 compare_1.vhdl

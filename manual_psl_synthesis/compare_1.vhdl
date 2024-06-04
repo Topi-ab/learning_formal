@@ -24,6 +24,19 @@ architecture tester of compare_1 is
 		);
 	end component;
 	
+	component ex_2 is
+		port(
+			clk_in: in std_logic;
+			sreset_in: in std_logic;
+			
+			a_in: in std_logic_vector(7 downto 0);
+			
+			vhdl_assert_out: out std_logic;
+			\psl_assert.A\: out std_logic;
+			\psl_assert.EN\: out std_logic
+		);
+	end component;
+	
 	type ex_t is record
 		vhdl_assert: std_logic;
 		psl_assert_en: std_logic;
@@ -44,6 +57,9 @@ architecture tester of compare_1 is
 	
 	signal a_ex_1: ex_t;
 	signal ok_ex_1: check_t := check_0;
+	
+	signal a_ex_2: ex_t;
+	signal ok_ex_2: check_t := check_0;
 	
 	function hold(a: check_t; b: ex_t) return check_t is
 		variable r: check_t;
@@ -73,14 +89,26 @@ begin
 			\psl_assert.A\ => a_ex_1.psl_assert_a
 		);
 	
+	ex_2_i: ex_2
+		port map(
+			clk_in => clk_in,
+			sreset_in => sreset_in,
+			a_in => a_in,
+			vhdl_assert_out => a_ex_2.vhdl_assert,
+			\psl_assert.EN\ => a_ex_2.psl_assert_en,
+			\psl_assert.A\ => a_ex_2.psl_assert_a
+		);
+	
 	process(clk_in)
 	begin
 		if rising_edge(clk_in) then
 			ok_ex_1 <= hold(ok_ex_1, a_ex_1);
+			ok_ex_2 <= hold(ok_ex_2, a_ex_2);
 		end if;
 	end process;
 	
 	default clock is rising_edge(clk_in);
 	
 	test_ex_1: assert always ok_ex_1.equal = '1';
+	test_ex_2: assert always ok_ex_2.equal = '1';
 end;
